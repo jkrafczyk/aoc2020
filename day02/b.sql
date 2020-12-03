@@ -1,27 +1,9 @@
-WITH line_offsets AS (
+WITH applied_policy AS (
     SELECT 
-        input.line AS line,
-        1 AS start_of_min_count,
-        INSTR(input.line, '-')-1 AS end_of_min_count,
-        INSTR(input.line, '-')+1 AS start_of_max_count,
-        INSTR(input.line, ' ')-1 AS end_of_max_count,
-        INSTR(input.line, ' ')+1 AS start_of_policy_char,
-        INSTR(input.line, ': ')+2 AS start_of_password 
-     FROM input
-), parsed_line AS (
-    SELECT 
-        o.line AS line,
-        CAST (SUBSTR(o.line, o.start_of_min_count, 1 + o.end_of_min_count - o.start_of_min_count) AS INTEGER) AS index1,
-        CAST (SUBSTR(o.line, o.start_of_max_count, 1 + o.end_of_max_count - o.start_of_max_count) AS INTEGER) AS index2,
-        SUBSTR(o.line, o.start_of_policy_char, 1) AS policy_char,
-        SUBSTR(o.line, o.start_of_password) AS password
-    FROM line_offsets o
-), applied_policy AS (
-    SELECT 
-        l.*,
-        SUBSTR(l.password, index1, 1) AS char1,
-        SUBSTR(l.password, index2, 1) AS char2
-    FROM parsed_line l
+        p.*,
+        SUBSTR(p.password, n1, 1) AS char1,
+        SUBSTR(p.password, n2, 1) AS char2
+    FROM passwords p
 )
 SELECT count(*)
 FROM applied_policy
