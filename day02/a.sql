@@ -1,6 +1,3 @@
-CREATE TABLE input(line VARCHAR);
-.import ./day2.input input
-
 WITH line_offsets AS (
     SELECT 
         input.line AS line,

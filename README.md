@@ -1,1 +1,1 @@
-# A few AOC 2020 solutions, in various languages.
+# A few AOC 2020 solutions in SQL
