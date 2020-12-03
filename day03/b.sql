@@ -7,40 +7,42 @@ INSERT INTO slopes(step_column, step_row) VALUES
     (1, 2);
 
 --Try to walk all the paths:
-CREATE VIEW slope_cost AS WITH RECURSIVE path_nodes AS (
-    SELECT 
-        slope_id,
-        step_column,
-        step_row,
-        1 AS row,
-        1 AS column
-    FROM slopes
-    UNION ALL
-    SELECT
-        pn.slope_id,
-        pn.step_column,
-        pn.step_row,
-        pn.row + pn.step_row,
-        CASE --This really should be a simple modulo operation, but i got confused with the 1-based indexing.
-            WHEN pn.column + step_column <= (SELECT MAX(column) FROM map) THEN pn.column + step_column
-            ELSE pn.column + step_column - (SELECT MAX(COLUMN) FROM map) 
-        END
-    FROM path_nodes pn
-    WHERE pn.row < (SELECT MAX(row) FROM map)
-), 
-tree_encounters AS (
-    SELECT pn.*, m.is_tree 
-    FROM path_nodes pn
-    INNER JOIN map m 
-    USING (row, column)
-    WHERE is_tree = TRUE
-)
+CREATE VIEW slope_cost AS 
+    WITH RECURSIVE path_nodes AS (
+        SELECT 
+            slope_id,
+            step_column,
+            step_row,
+            1 AS row,
+            1 AS column
+        FROM slopes
+        UNION ALL
+        SELECT
+            pn.slope_id,
+            pn.step_column,
+            pn.step_row,
+            pn.row + pn.step_row,
+            CASE --This really should be a simple modulo operation, but i got confused with the 1-based indexing.
+                WHEN pn.column + step_column <= (SELECT MAX(column) FROM map) THEN pn.column + step_column
+                ELSE pn.column + step_column - (SELECT MAX(COLUMN) FROM map) 
+            END
+        FROM path_nodes pn
+        WHERE pn.row < (SELECT MAX(row) FROM map)
+    ), 
+    tree_encounters AS (
+        SELECT pn.*, m.is_tree 
+        FROM path_nodes pn
+        INNER JOIN map m 
+        USING (row, column)
+        WHERE is_tree = TRUE
+    )
 
-SELECT 
-    slope_id, 
-    COUNT(*) AS cost 
-FROM tree_encounters 
-GROUP BY slope_id;
+    SELECT 
+        slope_id, 
+        COUNT(*) AS cost 
+    FROM tree_encounters 
+    GROUP BY slope_id
+;
 
 
 WITH RECURSIVE
