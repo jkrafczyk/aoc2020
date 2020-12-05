@@ -1,0 +1,1 @@
+SELECT max(seatId) FROM boarding_passes;
