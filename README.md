@@ -1,7 +1,7 @@
 # A few AOC 2020 solutions in SQL
 
 ## Requirements
-A somewhat recent version of sqlite3 needs to be available in $PATH. As of day 3, all solutions are tested with sqlite 3.24.0.  
+A somewhat recent version of sqlite3 needs to be available in $PATH. Until (including) day 9, all solutions should work with sqlite 3.24.0. Day 10 uses window functions and requires sqlite 3.25.0 or later.
 
 ## Usage
 Use `run.sh` to run the solutions for all days in order.  

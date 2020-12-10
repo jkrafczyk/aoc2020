@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Fix shitty old sqlite version on Mac OS by including homebrew path:
+PATH="/usr/local/opt/sqlite3/bin:$PATH"
+
 function indent() {
     sed 's/^/  /'
 }
